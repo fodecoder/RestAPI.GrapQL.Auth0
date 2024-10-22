@@ -6,4 +6,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="GraphQL" Version="8.2.0" />
+    <PackageReference Include="GraphQL.Server.All" Version="8.0.3" />
+    <PackageReference Include="GraphQL.Server.Ui.GraphiQL" Version="8.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Services\Common.Services.csproj" />
+    <ProjectReference Include="..\RestAPI.GraphQL.Auth0.Server.BL.Interfaces\RestAPI.GraphQL.Auth0.Server.BL.Interfaces.csproj" />
+    <ProjectReference Include="..\RestAPI.GraphQL.Auth0.Server.BL.Services\RestAPI.GraphQL.Auth0.Server.BL.Services.csproj" />
+  </ItemGroup>
+
 </Project>

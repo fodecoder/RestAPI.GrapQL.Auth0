@@ -1,0 +1,6 @@
+@RestAPI.GraphQL.Auth0.Server.WebAPI_HostAddress = http://localhost:5124
+
+GET {{RestAPI.GraphQL.Auth0.Server.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

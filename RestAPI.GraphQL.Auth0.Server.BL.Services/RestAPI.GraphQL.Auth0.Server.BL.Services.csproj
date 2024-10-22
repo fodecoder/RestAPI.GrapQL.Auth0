@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.DB\Common.DB.csproj" />
+    <ProjectReference Include="..\RestAPI.GraphQL.Auth0.Server.BL.Interfaces\RestAPI.GraphQL.Auth0.Server.BL.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

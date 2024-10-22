@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.DB", "Common.DB\Comm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Services", "Common.Services\Common.Services.csproj", "{8C9F8264-BA87-497A-BC54-3C56DB84A1AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{A95BB5BC-2C2F-4D1C-A158-B34AC3ACDD7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestAPI.GraphQL.Auth0.Client.ConsoleApp", "RestAPI.GraphQL.Auth0.Client.ConsoleApp\RestAPI.GraphQL.Auth0.Client.ConsoleApp.csproj", "{B9FDF01F-F7EE-4A18-9001-90358D1B3EA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{8C9F8264-BA87-497A-BC54-3C56DB84A1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C9F8264-BA87-497A-BC54-3C56DB84A1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C9F8264-BA87-497A-BC54-3C56DB84A1AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9FDF01F-F7EE-4A18-9001-90358D1B3EA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FDF01F-F7EE-4A18-9001-90358D1B3EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9FDF01F-F7EE-4A18-9001-90358D1B3EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9FDF01F-F7EE-4A18-9001-90358D1B3EA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,7 @@ Global
 		{A5B3C7E2-7D91-44D2-AD12-2D6B7C0AE249} = {8EA55A8E-3A39-484D-AE00-39799FDA30F9}
 		{93FE8A6F-EEA2-4F65-AE88-BF22470B42FA} = {07746A11-4895-4187-9160-3F0EFF59B2A2}
 		{8C9F8264-BA87-497A-BC54-3C56DB84A1AE} = {07746A11-4895-4187-9160-3F0EFF59B2A2}
+		{B9FDF01F-F7EE-4A18-9001-90358D1B3EA2} = {A95BB5BC-2C2F-4D1C-A158-B34AC3ACDD7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD464CB5-BE7A-4213-A6CA-FA18F66D862D}

@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Model;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Service;
+using RestAPI.GraphQL.Auth0.Server.WebAPI.Authorisation;
 
 namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
 {
     [ApiController]
+    [CustomAuthorization]
     [Route ( "[controller]" )]
     public class ItemController : ControllerBase
     {
@@ -20,7 +21,6 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task CreateItem( [FromBody] Item item )
         {
             _logger.Log ( LogLevel.Debug , $"Created Item: {item}" );

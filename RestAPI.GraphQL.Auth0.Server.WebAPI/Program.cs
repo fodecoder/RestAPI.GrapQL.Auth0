@@ -16,7 +16,7 @@ using RestAPI.GraphQL.Auth0.Server.BL.Services.Context;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Queries;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Repository;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Services;
-using RestAPI.GraphQL.Auth0.Server.WebAPI.Helpers;
+using RestAPI.GraphQL.Auth0.Server.WebAPI.ApiKey;
 using RestAPI.GraphQL.Auth0.Server.WebAPI.Middlewares;
 using System.Text;
 
@@ -87,8 +87,9 @@ builder.Services.AddAuthorization ( options =>
             .Build ();
 } );
 
-// Add the global scope for JwtSecurityTokenHandlerWrapper.
-builder.Services.AddScoped<JwtSecurityTokenHandlerWrapper> ();
+// Add API Key
+//builder.Services.AddTransient<ApiKeyValidationMiddleware> ();
+builder.Services.AddTransient<ApiKeyValidation> ();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwagger ();
@@ -104,7 +105,9 @@ if (app.Environment.IsDevelopment ())
 
 app.UseHttpsRedirection ();
 
+// Middlewares
 app.UseMiddleware<JwtTokenMiddleware> ();
+//app.UseMiddleware<ApiKeyValidationMiddleware> ();
 
 app.UseAuthentication ();
 app.UseRouting ();

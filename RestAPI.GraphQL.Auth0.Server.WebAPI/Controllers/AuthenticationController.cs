@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestAPI.GraphQL.Auth0.Server.WebAPI.Authorisation;
 using System.Security.Claims;
 
 namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
@@ -23,10 +24,11 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
         [ProducesResponseType ( StatusCodes.Status200OK )]
         public IActionResult Authenticate()
         {
-            //credentials are ok, create a ClaimsIdentity for user
+            // TODO check if user exisists in DB and use its actual role
+            // credentials are ok, create a ClaimsIdentity for user
             var identity = new ClaimsIdentity ( JwtBearerDefaults.AuthenticationScheme );
 
-            //add claim relative to user (useful for authorizations)
+            // add claim relative to user (useful for authorizations)
             identity.AddClaim ( new Claim ( ClaimTypes.Name , "User" ) );
             // insert here other claims (example: authenticated user's roles)
             identity.AddClaim ( new Claim ( ClaimTypes.Role , "Developer" ) );
@@ -42,8 +44,8 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorization]
         [Route ( "refresh" )]
-        [Authorize]
         [ProducesResponseType ( StatusCodes.Status200OK )]
         [ProducesResponseType ( StatusCodes.Status400BadRequest )]
         [ProducesResponseType ( StatusCodes.Status401Unauthorized )]

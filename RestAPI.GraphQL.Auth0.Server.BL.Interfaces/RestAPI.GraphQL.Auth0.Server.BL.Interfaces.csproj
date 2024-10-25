@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GraphQL" Version="8.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Common.DB\Common.DB.csproj" />
     <ProjectReference Include="..\Common.Services\Common.Services.csproj" />
   </ItemGroup>

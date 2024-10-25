@@ -1,10 +1,5 @@
 using Common.DB.Extension;
 using Common.Services.Extension;
-using Common.Services.Schemas;
-using GraphQL;
-using GraphQL.MicrosoftDI;
-using GraphQL.SystemTextJson;
-using GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -13,11 +8,10 @@ using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Repository;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Service;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.AutoMapper;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Context;
-using RestAPI.GraphQL.Auth0.Server.BL.Services.Queries;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Repository;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Services;
 using RestAPI.GraphQL.Auth0.Server.WebAPI.ApiKey;
-using RestAPI.GraphQL.Auth0.Server.WebAPI.Middlewares;
+using RestAPI.GraphQL.Auth0.Server.WebAPI.Queries;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder ( args );
@@ -41,17 +35,13 @@ builder.Services.AddAutoMapper ( typeof ( InventoryProfile ) );
 builder.Services.AddDatabase<InventoryDBContext> ();
 
 // Add GraphQL 
-builder.Services.AddSingleton<IDocumentExecuter , DocumentExecuter> ();
-builder.Services.AddSingleton<IGraphQLSerializer , GraphQLSerializer> ();
-builder.Services.AddTransient<InventoryQuery> ();
-builder.Services.AddScoped<ISchema , GraphQLSchema<InventoryQuery>> ( services => new GraphQLSchema<InventoryQuery> ( new SelfActivatingServiceProvider ( services ) ) );
-builder.Services.AddGraphQLExtension<InventoryQuery> ( options =>
-{
-    options.EndPoint = "/graphql";
-} );
+builder.Services
+    .AddGraphQLServer ()
+    .AddAuthorization ()
+    .AddQueryType<InventoryQuery> ();
 
 // Add Authorisation and Authentication
-builder.Services.AddTransient<JwtTokenMiddleware> ();
+//builder.Services.AddTransient<JwtTokenMiddleware> ();
 builder.Services.Configure<JwtTokenConfig> ( builder.Configuration.GetSection ( nameof ( JwtTokenConfig ) ) );
 builder.Services
     .AddAuthentication ( options =>
@@ -106,7 +96,7 @@ if (app.Environment.IsDevelopment ())
 app.UseHttpsRedirection ();
 
 // Middlewares
-app.UseMiddleware<JwtTokenMiddleware> ();
+//app.UseMiddleware<JwtTokenMiddleware> ();
 //app.UseMiddleware<ApiKeyValidationMiddleware> ();
 
 app.UseAuthentication ();
@@ -116,7 +106,7 @@ app.UseAuthorization ();
 app.MapControllers ();
 
 // GraphQL
-app.UseGraphQLGraphiQL ();
-app.UseGraphQL<ISchema> ();
+//app.UseGraphQLGraphiQL ();
+app.MapGraphQL ();
 
 app.Run ();

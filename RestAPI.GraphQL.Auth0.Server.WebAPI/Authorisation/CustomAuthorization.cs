@@ -60,8 +60,8 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Authorisation
                                 Value = new
                                 {
                                     Status = "Error" ,
-                                    Message = "Invalid Token"
-                                } ,
+                                    Message = "Invalid JWT Token"
+                                }
                             };
                         }
                     }

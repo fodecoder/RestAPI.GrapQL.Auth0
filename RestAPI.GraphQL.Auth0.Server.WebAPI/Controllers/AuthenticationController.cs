@@ -2,20 +2,27 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Model;
 using RestAPI.GraphQL.Auth0.Server.WebAPI.Authorisation;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
 {
-    [Route ( "api/core/authentication" )]
+    [Route ( "[controller]" )]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private readonly JwtTokenConfig _jwtConfig;
         private readonly IMapper _mapper;
 
-        public AuthenticationController( IMapper mapper )
+        public AuthenticationController( IMapper mapper , IOptions<JwtTokenConfig> config )
         {
             _mapper = mapper;
+            _jwtConfig = config.Value;
         }
 
         [HttpPost]
@@ -24,6 +31,8 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
         [ProducesResponseType ( StatusCodes.Status200OK )]
         public IActionResult Authenticate()
         {
+            IActionResult response = Unauthorized ();
+
             // TODO check if user exisists in DB and use its actual role
             // credentials are ok, create a ClaimsIdentity for user
             var identity = new ClaimsIdentity ( JwtBearerDefaults.AuthenticationScheme );
@@ -39,8 +48,33 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
                 HttpContext.User = new ClaimsPrincipal ( identity );
             }
 
+            // Retrieve the JWT secret from environment variables and encode it
+            var key = Encoding.UTF8.GetBytes ( _jwtConfig.JwtTokenSecret! );
+
+            if (!double.TryParse ( _jwtConfig.JwtTokenExpirationInMinutes , out var expirationMinutes ))
+            {
+                expirationMinutes = 40;
+            }
+
+            // Describe the token settings
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = _jwtConfig.JwtTokenIssuer ,
+                Audience = _jwtConfig.JwtTokenAudience ,
+                Subject = identity ,
+                Expires = DateTime.UtcNow.AddMinutes ( expirationMinutes ) ,
+                SigningCredentials = new SigningCredentials ( new SymmetricSecurityKey ( key ) , SecurityAlgorithms.HmacSha256Signature )
+            };
+
+            // Create a JWT security token
+            var _jwtSecurityTokenHandler = new JwtSecurityTokenHandler ();
+            var token = _jwtSecurityTokenHandler.CreateJwtSecurityToken ( tokenDescriptor );
+
+            // Write the token as a string and return it
+            var responseToken = _jwtSecurityTokenHandler.WriteToken ( token );
+
             // token will be created by middleware if user is authenticated
-            return Ok ();
+            return Ok ( responseToken );
         }
 
         [HttpGet]

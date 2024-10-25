@@ -1,5 +1,6 @@
 ﻿using Common.DB.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Repository;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Context;
 
@@ -36,7 +37,7 @@ namespace RestAPI.GraphQL.Auth0.Server.BL.Services.Repository
         public async Task<IEnumerable<Item>> GetDBItemListAsync( string name , int limit )
         {
             return await _inventoryDb.Items
-                .Where ( i => i.Name.Contains ( name ) )
+                .Where ( i => name.IsNullOrEmpty () || i.Name.Contains ( name ) )
                 .Take ( limit )
                 .ToListAsync ();
         }

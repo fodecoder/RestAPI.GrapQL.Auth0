@@ -11,6 +11,7 @@ using RestAPI.GraphQL.Auth0.Server.BL.Services.Context;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Repository;
 using RestAPI.GraphQL.Auth0.Server.BL.Services.Services;
 using RestAPI.GraphQL.Auth0.Server.WebAPI.ApiKey;
+using RestAPI.GraphQL.Auth0.Server.WebAPI.Authentication;
 using RestAPI.GraphQL.Auth0.Server.WebAPI.Queries;
 using System.Text;
 
@@ -66,16 +67,27 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey ( Encoding.UTF8.GetBytes ( builder.Configuration.GetSection ( nameof ( JwtTokenConfig ) )["JwtTokenSecret"]! ) ) ,
             ClockSkew = TimeSpan.Zero
         };
-    } );
+    } )
+    .AddScheme<ApiKeyAuthenticationOptions , ApiKeyAuthenticationHandler> ( Constants.ApiKeySchemeName , options => { } );
 
 // Configure the default authorization policy
-builder.Services.AddAuthorization ( options =>
-{
-    options.DefaultPolicy = new AuthorizationPolicyBuilder ()
-            .AddAuthenticationSchemes ( JwtBearerDefaults.AuthenticationScheme )
+builder.Services
+    .AddAuthorization ( options =>
+    {
+        var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder (
+            JwtBearerDefaults.AuthenticationScheme ,
+            Constants.ApiKeySchemeName );
+
+        defaultAuthorizationPolicyBuilder =
+            defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser ();
+
+        options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build ();
+
+        var onlyJwtSchemePolicyBuilder = new AuthorizationPolicyBuilder ( JwtBearerDefaults.AuthenticationScheme );
+        options.AddPolicy ( JwtBearerDefaults.AuthenticationScheme , onlyJwtSchemePolicyBuilder
             .RequireAuthenticatedUser ()
-            .Build ();
-} );
+            .Build () );
+    } );
 
 // Add API Key
 //builder.Services.AddTransient<ApiKeyValidationMiddleware> ();

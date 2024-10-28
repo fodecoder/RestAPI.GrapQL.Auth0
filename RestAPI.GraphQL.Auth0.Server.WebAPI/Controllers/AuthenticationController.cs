@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Model;
-using RestAPI.GraphQL.Auth0.Server.WebAPI.Authorisation;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -31,8 +30,6 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
         [ProducesResponseType ( StatusCodes.Status200OK )]
         public IActionResult Authenticate()
         {
-            IActionResult response = Unauthorized ();
-
             // TODO check if user exisists in DB and use its actual role
             // credentials are ok, create a ClaimsIdentity for user
             var identity = new ClaimsIdentity ( JwtBearerDefaults.AuthenticationScheme );
@@ -77,15 +74,14 @@ namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
             return Ok ( responseToken );
         }
 
-        [HttpGet]
-        [CustomAuthorization]
-        [Route ( "refresh" )]
+        [HttpGet ( "refresh" )]
+        [Authorize ( Policy = JwtBearerDefaults.AuthenticationScheme )]
         [ProducesResponseType ( StatusCodes.Status200OK )]
         [ProducesResponseType ( StatusCodes.Status400BadRequest )]
         [ProducesResponseType ( StatusCodes.Status401Unauthorized )]
         public IActionResult RefreshToken()
         {
-            // token will be created by middleware if user is authenticated
+            // TODO refresh jwt token
             return Ok ();
         }
     }

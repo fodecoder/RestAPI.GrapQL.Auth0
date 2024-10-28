@@ -1,12 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Model;
 using RestAPI.GraphQL.Auth0.Server.BL.Interfaces.Service;
-using RestAPI.GraphQL.Auth0.Server.WebAPI.Authorisation;
 
 namespace RestAPI.GraphQL.Auth0.Server.WebAPI.Controllers
 {
     [ApiController]
-    [CustomAuthorization]
+    [Authorize]
     [Route ( "[controller]" )]
     public class ItemController : ControllerBase
     {

@@ -35,12 +35,6 @@ builder.Services.AddAutoMapper ( typeof ( InventoryProfile ) );
 // Add Db Context
 builder.Services.AddDatabase<InventoryDBContext> ();
 
-// Add GraphQL 
-builder.Services
-    .AddGraphQLServer ()
-    .AddAuthorization ()
-    .AddQueryType<InventoryQuery> ();
-
 // Add Authorisation and Authentication
 //builder.Services.AddTransient<JwtTokenMiddleware> ();
 builder.Services.Configure<JwtTokenConfig> ( builder.Configuration.GetSection ( nameof ( JwtTokenConfig ) ) );
@@ -84,9 +78,7 @@ builder.Services
         options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build ();
 
         var onlyJwtSchemePolicyBuilder = new AuthorizationPolicyBuilder ( JwtBearerDefaults.AuthenticationScheme );
-        options.AddPolicy ( JwtBearerDefaults.AuthenticationScheme , onlyJwtSchemePolicyBuilder
-            .RequireAuthenticatedUser ()
-            .Build () );
+        options.AddPolicy ( JwtBearerDefaults.AuthenticationScheme , onlyJwtSchemePolicyBuilder.RequireAuthenticatedUser ().Build () );
     } );
 
 // Add API Key
@@ -95,6 +87,13 @@ builder.Services.AddTransient<ApiKeyValidation> ();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwagger ();
+
+// Add GraphQL 
+builder.Services
+    .AddGraphQLServer ()
+    .AddAuthorization ()
+    .AddHttpRequestInterceptor<AuthenticationInterceptor> ()
+    .AddQueryType<InventoryQuery> ();
 
 var app = builder.Build ();
 
@@ -111,8 +110,8 @@ app.UseHttpsRedirection ();
 //app.UseMiddleware<JwtTokenMiddleware> ();
 //app.UseMiddleware<ApiKeyValidationMiddleware> ();
 
-app.UseAuthentication ();
 app.UseRouting ();
+app.UseAuthentication ();
 app.UseAuthorization ();
 
 app.MapControllers ();
